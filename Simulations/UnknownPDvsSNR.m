@@ -18,3 +18,5 @@ detector = @(s, l, n, k) UnknownNoise(s, l, n) / UnknownSignal(s, l, n, k, niter
 
 result = PDvsSNR(n, l, k, probFA, snrs, iters, detector, false);
 writematrix(result, "Data/PDvsSNR/Unknown/Unknown Variance.csv");
+
+plot(result(1, :), result(2, :))

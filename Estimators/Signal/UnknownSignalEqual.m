@@ -4,7 +4,8 @@
 
 function result = UnknownSignalEqual(s, l, n, ~)
     [vecs, vals] = eig(s);
-    vals = diag(vals)';
+    [vals, inds] = sort(diag(vals)', 'descend');
+    vecs = vecs(:, inds);
 
     var = sum(vals((n + 1):end)) / (2 * l - n);
     ds = vals - var;

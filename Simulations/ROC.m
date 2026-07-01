@@ -23,7 +23,7 @@ function result = ROC(n, l, k, probFAs, snr, iters, detector, sameNoise)
             detectorStat(i) = real(detector(s, l, n, k));
         end
 
-        etas(i) = ThresholdBisection(detectorStat, probFAs(i), 1 / iters);
+        etas(i) = ThresholdBisection(detectorStat, probFAs(i), 2 / iters);
     end
 
     probDet = zeros(1, length(probFAs));

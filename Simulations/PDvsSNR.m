@@ -20,7 +20,7 @@ function result = PDvsSNR(n, l, k, probFA, snrs, iters, detector, sameNoise)
         detectorStat(i) = real(detector(s, l, n, k));
     end
 
-    eta = ThresholdBisection(detectorStat, probFA, 1 / iters); % 1e-9
+    eta = ThresholdBisection(detectorStat, probFA, 2 / iters); % 1e-9
     probDet = zeros(1, length(snrs));
 
     for i = 1:length(snrs)

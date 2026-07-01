@@ -12,9 +12,9 @@ snr = -10; % SNR in dB
 iters = 32768;
 
 %% Simulation
-detector = @(s, l, n, k) UnknownNoiseEqual(s, l, n) / UnknownSignalEqual(s, l, n, k);
+detector = @(s, l, n, k) UnknownNoise(s, l, n) / UnknownSignal(s, l, n, k);
 
-result = ROC(n, l, k, probFAs, snr, iters, detector, true);
-writematrix(result, "Data/ROC/Unknown/Unknown but Equal Variance.csv");
+result = ROC(n, l, k, probFAs, snr, iters, detector, false);
+writematrix(result, "Data/ROC/Unknown/Unknown Variance.csv");
 
 plot(result(1, :), result(2, :))
