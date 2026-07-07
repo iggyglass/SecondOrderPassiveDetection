@@ -10,38 +10,31 @@
 %                where s is the sample covariance matrix
 %   sameNoise -- whether the noise variances should be the same
 
-function result = ROC(n, l, k, probFAs, snr, iters, detector, sameNoise)
-    detectorStat = zeros(1, iters);
-    etas = zeros(1, length(probFAs));
+function result = ROC(n, l, k, snr, iters, detector, sameNoise)
+    noiseStat = zeros(1, iters);
+    sigStat = zeros(1, iters);
     tic
 
-    for i = 1:length(probFAs)
-        for j = 1:iters
-            x = RandomNoise(n, l, sameNoise);
-            s = x * x' / n;
-
-            detectorStat(i) = real(detector(s, l, n, k));
-        end
-
-        etas(i) = ThresholdBisection(detectorStat, probFAs(i), 2 / iters);
+    for i = 1:iters
+        noiseStat(i) = computeStatistic(RandomNoise(n, l, sameNoise), detector, l, n, k);
+        sigStat(i) = computeStatistic(RandomSig(n, l, k, sameNoise, snr), detector, l, n, k);
     end
 
-    probDet = zeros(1, length(probFAs));
+    thresh = linspace(min(noiseStat), max(sigStat), 1024);
+    probDet = zeros(1, length(thresh));
+    probFA = zeros(1, length(thresh));
 
-    for i = 1:length(probFAs)
-        detections = 0;
-
-        for j = 1:iters
-            x = RandomSig(n, l, k, sameNoise, snr);
-            s = x * x' / n;
-
-            stat = detector(s, l, n, k);
-            detections = detections + (stat > etas(i));
-        end
-
-        probDet(i) = detections / iters;
+    for i = 1:length(thresh)
+        probDet(i) = sum(sigStat > thresh(i)) / iters;
+        probFA(i) = sum(noiseStat > thresh(i)) / iters;
     end
 
     toc
-    result = [probFAs; probDet];
+    result = [probFA; probDet];
+end
+
+function stat = computeStatistic(x, detector, l, n, k)
+    s = x * x' / n;
+
+    stat = detector(s, l, n, k);
 end

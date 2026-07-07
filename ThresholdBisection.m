@@ -8,7 +8,15 @@ function eta = ThresholdBisection(H0stat, probFA, epsilon)
     bis = (a + b) / 2;
     err = calcError(H0stat, probFA, bis);
 
-    while ((err > epsilon) && (abs(a - b) > epsilon * 100))
+    % because this is a binary search, the maximum number of iterations we
+    % will ever need is log2(N).
+    niterMax = ceil(abs(log2(epsilon))); 
+
+    for i = 1:niterMax
+        if (~((err > epsilon) && (abs(a - b) > epsilon * 100)))
+            break
+        end
+
         currBis = sum(H0stat > bis) / length(H0stat);
 
         if currBis > probFA

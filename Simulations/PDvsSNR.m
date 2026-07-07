@@ -30,7 +30,7 @@ function result = PDvsSNR(n, l, k, probFA, snrs, iters, detector, sameNoise)
             x = RandomSig(n, l, k, sameNoise, snrs(i));
             s = x * x' / n;
 
-            stat = detector(s, l, n, k);
+            stat = real(detector(s, l, n, k));
             detections = detections + (stat > eta);
         end
 

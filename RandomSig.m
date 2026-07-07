@@ -22,11 +22,5 @@ function [x, var] = RandomSig(n, l, k, same, snr)
 end
 
 function var = getVar(same)
-    temp = unifrnd(0, 1);
-
-    if same
-        var = [temp, temp];
-    else
-        var = [temp, unifrnd(0, 1)];
-    end
+    var = [1, 1 * same + 10 * ~same];
 end
