@@ -7,7 +7,7 @@ k = 8; % Dimension of subspace
 
 snr = -10; % SNR in dB
 
-iters = 16384;
+iters = 16384; % Number of MC iterations to run
 
 %% Simulation
 detector = @(s, l, n, k) UnknownNoiseEqual(s, l, n) / UnknownSignalEqual(s, l, n, k);
@@ -22,9 +22,16 @@ writematrix(resultWrong, "Data/ROC/Unknown/Wrong/Unknown but Equal Variance.csv"
 resultDiversity = ROC(n, l, k, snr, iters, diversityDetector, true);
 writematrix(resultDiversity, "Data/ROC/Unknown/Diversity/Unknown but Equal Variance.csv");
 
+resultWrongDiversity = ROC(n, l, k, snr, iters, diversityDetector, false);
+writematrix(resultWrongDiversity, "Data/ROC/Unknown/Diversity/Wrong/Unknown but Equal Variance.csv");
+
 %% Plotting
+
+% Just plot the results after completion as a quick sanity-check
 plot(resultCorrect(1, :), resultCorrect(2, :), "DisplayName", "Correct Model");
 hold on
 plot(resultWrong(1, :), resultWrong(2, :), "DisplayName", "Wrong Model");
 plot(resultDiversity(1, :), resultDiversity(2, :), "DisplayName", "Diversity");
+plot(resultWrongDiversity(1, :), resultWrongDiversity(2, :), "DisplayName", "Diversity; Wrong Model");
+
 legend();

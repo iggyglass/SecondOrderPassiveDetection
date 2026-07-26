@@ -1,10 +1,10 @@
 % Computes the H1 detector statistic in the case where noise unknown and
 % unequal and channel is unknown. Largely stolen from Ignacio's SSVWW code.
-
 function result = UnknownSignal(S, l, ~, k, niterMax, epsilon)
     [S11, S22] = SplitMatrix(S, l);
 
-    R = [S11, zeros(l, l); zeros(l, l), S22];
+    R = blkdiag(S11, S22);
+    Rest = zeros(2 * l, 2 * l);
 
     for i = 1:niterMax
         Rni = sqrtm(inv(R));
@@ -21,7 +21,7 @@ function result = UnknownSignal(S, l, ~, k, niterMax, epsilon)
 
         var11 = trace(var11) / l * eye(l);
         var22 = trace(var22) / l * eye(l);
-        R = [var11, zeros(l, l); zeros(l, l), var22];
+        R = blkdiag(var11, var22);
 
         Rest = R + H * H';
 
@@ -30,9 +30,10 @@ function result = UnknownSignal(S, l, ~, k, niterMax, epsilon)
         end
     end
 
-    result = det(R + H * H');
+    result = det(Rest);
 end
 
+% Returns the diagonal blocks of 2x2 block matrix X with block size l
 function [X11, X22] = SplitMatrix(X, l)
     X11 = X(1:l, 1:l);
     X22 = X((l + 1):(2 * l), (l + 1):(2 * l));

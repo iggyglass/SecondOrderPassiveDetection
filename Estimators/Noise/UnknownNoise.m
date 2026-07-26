@@ -11,6 +11,8 @@ function result = UnknownNoise(s, l, ~)
     result = (var1 * var2) ^ l;
 end
 
+% Returns the diagonal blocks on 2x2 block diagonal matrix X with block
+% size l
 function [X11, X22] = SplitMatrix(X, l)
     X11 = X(1:l, 1:l);
     X22 = X((l + 1):(2 * l), (l + 1):(2 * l));

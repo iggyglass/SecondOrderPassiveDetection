@@ -6,7 +6,7 @@
 %   snr -- the SNR of the recieved data in dB
 
 function [x, var] = RandomSig(n, l, k, same, snr)
-    var = getVar(same);
+    var = GetVar(same);
     R = diag(kron(var, ones(1, l)));
     mu = zeros(1, 2 * l);
 
@@ -19,8 +19,4 @@ function [x, var] = RandomSig(n, l, k, same, snr)
     noise = (mvnrnd(mu, R, n) + 1i * mvnrnd(mu, R, n))' / sqrt(2);
 
     x = sqrt(srcPwr) * H * common + noise;
-end
-
-function var = getVar(same)
-    var = [1, 1 * same + 10 * ~same];
 end

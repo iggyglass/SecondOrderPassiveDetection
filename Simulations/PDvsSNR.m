@@ -16,20 +16,27 @@ function result = PDvsSNR(n, l, k, probFA, snrs, iters, detector, sameNoise)
     for i = 1:iters
         x = RandomNoise(n, l, sameNoise);
         s = x * x' / n;
-
+        
+        % Floating point error sometimes creates very small imaginary
+        % components in our detector statistic, hence we just take the real
+        % part (note that this is also something that Cole does)
         detectorStat(i) = real(detector(s, l, n, k));
     end
 
-    eta = ThresholdBisection(detectorStat, probFA, 2 / iters); % 1e-9
+    eta = ThresholdBisection(detectorStat, probFA, 1 / iters);
     probDet = zeros(1, length(snrs));
 
     for i = 1:length(snrs)
         detections = 0;
+        snr = snrs(i);
 
-        for j = 1:iters
-            x = RandomSig(n, l, k, sameNoise, snrs(i));
+        parfor j = 1:iters
+            x = RandomSig(n, l, k, sameNoise, snr);
             s = x * x' / n;
 
+            % MATLAB's linter doesn't realize that `detector` is a function
+            % and not an array that we're indexing, as this is impossible
+            % to deduce from this file alone given MATLAB's grammar
             stat = real(detector(s, l, n, k));
             detections = detections + (stat > eta);
         end
